@@ -12,7 +12,7 @@ const reviewsFile = path.join(__dirname, 'reviews.json');
 const TARGET_THREAD = 4;
 let reviews = [];
 
-// 1. Загрузка отзывов из файла при запуске
+// Загрузка отзывов из файла при запуске
 if (fs.existsSync(reviewsFile)) {
   try {
     reviews = JSON.parse(fs.readFileSync(reviewsFile, 'utf-8'));
@@ -22,7 +22,7 @@ if (fs.existsSync(reviewsFile)) {
   }
 }
 
-// 2. Сохраняем в файл при каждом новом сообщении
+// Сохраняем в файл при каждом новом сообщении
 function saveReviewsToFile() {
   fs.writeFile(reviewsFile, JSON.stringify(reviews, null, 2), (err) => {
     if (err) console.error('Ошибка записи файла отзывов:', err.message);
@@ -32,20 +32,22 @@ function saveReviewsToFile() {
 app.post('/webhook', (req, res) => {
   const msg = req.body.message;
 
- if (msg && msg.text && msg.message_thread_id === TARGET_THREAD) {
-  reviews.unshift({
-from: msg.sender_chat ? "CryptoSwift" : (msg.from.username || msg.from.first_name)
-  text: msg.text,
-    timestamp: new Date().toISOString()  // сохраняем UTC дату
-  });
-  saveReviewsToFile();
-}
+  if (msg && msg.text && msg.message_thread_id === TARGET_THREAD) {
+    reviews.unshift({
+      from: msg.sender_chat ? "CryptoSwift" : (msg.from.username || msg.from.first_name),
+      text: msg.text,
+      timestamp: new Date().toISOString()
+    });
+    saveReviewsToFile();
+  }
+
   res.sendStatus(200);
 });
 
 app.get('/api/reviews', (req, res) => {
   res.json(reviews);
 });
+
 app.delete('/api/reviews', (req, res) => {
   reviews = [];
   saveReviewsToFile();
