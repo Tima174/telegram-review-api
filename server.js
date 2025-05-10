@@ -47,6 +47,11 @@ from: msg.from.is_bot ? "CryptoSwift" : (msg.from.username || msg.from.first_nam
 app.get('/api/reviews', (req, res) => {
   res.json(reviews);
 });
+app.delete('/api/reviews', (req, res) => {
+  reviews = [];
+  saveReviewsToFile();
+  res.json({ message: 'Отзывы очищены' });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
