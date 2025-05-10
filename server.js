@@ -11,16 +11,12 @@ const reviews = [];
 
 app.post('/webhook', (req, res) => {
   const msg = req.body.message;
-  if (
-    msg &&
-    msg.text &&
-    msg.message_thread_id === TARGET_THREAD &&
-    !reviews.find(r => r.text === msg.text)
-  ) {
-    reviews.unshift({
-      from: msg.from.username || msg.from.first_name,
-      text: msg.text
-    });
+  if (msg && msg.text && msg.message_thread_id === TARGET_THREAD) {
+  reviews.unshift({
+    from: msg.from.username || msg.from.first_name,
+    text: msg.text
+  });
+}
 
     // ограничим до 100 последних отзывов
     if (reviews.length > 100) reviews.length = 100;
