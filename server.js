@@ -33,14 +33,15 @@ app.post('/webhook', (req, res) => {
   const msg = req.body.message;
 
  if (msg && msg.text) {
+  const isAdmin = msg.from.is_bot || msg.from.username === 'GroupAnonymousBot';
+
   reviews.unshift({
-from: msg.from.is_bot ? "CryptoSwift" : (msg.from.username || msg.from.first_name)
-  text: msg.text
+    from: isAdmin ? 'CryptoSwift' : (msg.from.username || msg.from.first_name),
+    text: msg.text
   });
 
   saveReviewsToFile();
 }
-
   res.sendStatus(200);
 });
 
