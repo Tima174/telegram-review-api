@@ -1,29 +1,36 @@
 const express = require('express');
-const axios = require('axios');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
-const BOT_TOKEN = '7755461558:AAFX_-QPezXvtd6iN8OICP3Yfo6b-E9MUSY';
-const TARGET_THREAD = 4;
+const TARGET_THREAD = 4; // номер треда с отзывами
+const reviews = [];
 
-app.get('/api/reviews', async (req, res) => {
-  try {
-    const updates = await axios.get(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
-    const messages = updates.data.result
-      .map(u => u.message)
-      .filter(msg => msg && msg.text && msg.message_thread_id === TARGET_THREAD)
-      .map(msg => ({
-        from: msg.from.username || msg.from.first_name,
-        text: msg.text
-      }));
+app.post('/webhook', (req, res) => {
+  const msg = req.body.message;
+  if (
+    msg &&
+    msg.text &&
+    msg.message_thread_id === TARGET_THREAD &&
+    !reviews.find(r => r.text === msg.text)
+  ) {
+    reviews.unshift({
+      from: msg.from.username || msg.from.first_name,
+      text: msg.text
+    });
 
-    res.json(messages);
-  } catch (err) {
-    console.error('Ошибка:', err.message);
-    res.status(500).json({ error: 'Ошибка загрузки отзывов' });
+    // ограничим до 100 последних отзывов
+    if (reviews.length > 100) reviews.length = 100;
   }
+
+  res.sendStatus(200);
+});
+
+app.get('/api/reviews', (req, res) => {
+  res.json(reviews);
 });
 
 const PORT = process.env.PORT || 3000;
