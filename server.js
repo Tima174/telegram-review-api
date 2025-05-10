@@ -26,7 +26,6 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
-// ВАЖНО: использовать PORT от Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
