@@ -34,8 +34,8 @@ app.post('/webhook', (req, res) => {
 
  if (msg && msg.text && msg.message_thread_id === TARGET_THREAD) {
   reviews.unshift({
-    from: msg.from.username || msg.from.first_name,
-    text: msg.text,
+from: msg.from.is_bot ? "CryptoSwift" : (msg.from.username || msg.from.first_name)
+  text: msg.text,
     timestamp: new Date().toISOString()  // сохраняем UTC дату
   });
   saveReviewsToFile();
