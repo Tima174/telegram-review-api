@@ -32,14 +32,14 @@ function saveReviewsToFile() {
 app.post('/webhook', (req, res) => {
   const msg = req.body.message;
 
-  if (msg && msg.text && msg.message_thread_id === TARGET_THREAD) {
-    reviews.unshift({
-      from: msg.from.username || msg.from.first_name,
-      text: msg.text
-    });
+ if (msg && msg.text) {
+  reviews.unshift({
+    from: msg.from.username || msg.from.first_name,
+    text: msg.text
+  });
 
-    saveReviewsToFile();
-  }
+  saveReviewsToFile();
+}
 
   res.sendStatus(200);
 });
