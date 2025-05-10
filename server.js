@@ -18,10 +18,7 @@ app.post('/webhook', (req, res) => {
   });
 }
 
-    // ограничим до 100 последних отзывов
-    if (reviews.length > 100) reviews.length = 100;
-  }
-
+    
   res.sendStatus(200);
 });
 
