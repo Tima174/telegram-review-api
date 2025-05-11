@@ -62,6 +62,14 @@ app.get('/api/raw', (req, res) => {
     res.status(500).send('Ошибка чтения файла');
   }
 });
+app.get('/download/reviews', (req, res) => {
+  try {
+    const filePath = reviewsFile;
+    res.download(filePath, 'reviews.json');
+  } catch (err) {
+    res.status(500).send('Ошибка при скачивании файла');
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
