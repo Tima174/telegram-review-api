@@ -33,12 +33,17 @@ app.post('/webhook', (req, res) => {
   const msg = req.body.message;
   console.log("DEBUG >>>", JSON.stringify(msg, null, 2));
 
-if (msg && msg.text && msg.message_thread_id === TARGET_THREAD)  {
+if (
+  msg &&
+  msg.text &&
+  msg.message_thread_id === TARGET_THREAD &&
+  !msg.sender_chat // <- эта строка исключает все ответы от имени канала/бота
+) {
   reviews.unshift({
-      from: msg.sender_chat ? "CryptoSwift" : (msg.from.username || msg.from.first_name),
-      text: msg.text,
-      timestamp: new Date().toISOString()
-    });
+    from: msg.from.username || msg.from.first_name,
+    text: msg.text,
+    timestamp: new Date().toISOString()
+  });
     saveReviewsToFile();
   }
 
