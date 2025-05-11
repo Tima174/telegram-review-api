@@ -54,6 +54,14 @@ app.delete('/api/reviews', (req, res) => {
   saveReviewsToFile();
   res.json({ message: 'Отзывы очищены' });
 });
+app.get('/api/raw', (req, res) => {
+  try {
+    const data = fs.readFileSync(reviewsFile, 'utf-8');
+    res.type('text').send(data);
+  } catch (err) {
+    res.status(500).send('Ошибка чтения файла');
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
